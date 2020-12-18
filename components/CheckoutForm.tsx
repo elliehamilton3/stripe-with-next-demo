@@ -8,7 +8,7 @@ import { fetchPostJSON } from '../utils/api-helpers'
 const CheckoutForm = () => {
   const [loading, setLoading] = useState(false)
   // React.FormEventHandler<HTMLFormElement>
-  const handleSubmit = (priceId: "monthly" | "yearly") => async (e: any) => {
+  const handleSubmit = (priceId: "oneweek" |"monthly" | "yearly") => async (e: any) => {
     e.preventDefault()
     setLoading(true)
     // Create a Checkout Session.
@@ -41,7 +41,7 @@ const CheckoutForm = () => {
       <StripeTestCards />
       <ul className="card-list">
         <li>
-        <form onSubmit={handleSubmit("monthly")}>
+        <form onSubmit={handleSubmit("oneweek")}>
             <a className="card checkout-style-background">
               <h2>£2</h2>
               <h3>7-day trial</h3>

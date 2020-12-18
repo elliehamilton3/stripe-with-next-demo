@@ -13,6 +13,15 @@ export default async function handler(
   if (req.method === 'POST') {
     try {
       let price;
+      const trial:any[] = [];
+      if(req.body.priceId === "oneweek") { 
+        price = process.env.WEEK_PRICE_ID 
+        trial.push( {
+          price: process.env.MONTHLY_PRICE_ID ,
+          quantity: 1,
+          
+        })
+      };
       if(req.body.priceId === "monthly") price = process.env.MONTHLY_PRICE_ID;
       if(req.body.priceId === "yearly") price = process.env.YEARLY_PRICE_ID;
       // Create Checkout Sessions from body params.
@@ -22,9 +31,11 @@ export default async function handler(
         line_items: [
           {
             price,
-            quantity: 1,
+            quantity: 1,      
           },
+          ...trial
         ],
+        subscription_data: {trial_period_days: 7},
         success_url: `${req.headers.origin}/result?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${req.headers.origin}/donate-with-checkout`,
       }
