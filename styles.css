@@ -41,7 +41,7 @@ body {
 
 .page-container {
   padding-bottom: 60px;
-  max-width: var(--page-width-max);
+  /* max-width: var(--page-width-max); */
 }
 
 h1 {
@@ -125,10 +125,6 @@ li {
 
 .card img {
   width: 80%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 .error-message {

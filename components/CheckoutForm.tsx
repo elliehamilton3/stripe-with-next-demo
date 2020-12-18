@@ -1,31 +1,19 @@
 import React, { useState } from 'react'
 
-import CustomDonationInput from '../components/CustomDonationInput'
 import StripeTestCards from '../components/StripeTestCards'
 
 import getStripe from '../utils/get-stripejs'
 import { fetchPostJSON } from '../utils/api-helpers'
-import { formatAmountForDisplay } from '../utils/stripe-helpers'
-import * as config from '../config'
 
 const CheckoutForm = () => {
   const [loading, setLoading] = useState(false)
-  const [input, setInput] = useState({
-    customDonation: Math.round(config.MAX_AMOUNT / config.AMOUNT_STEP),
-  })
-
-  const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) =>
-    setInput({
-      ...input,
-      [e.currentTarget.name]: e.currentTarget.value,
-    })
-
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
+  // React.FormEventHandler<HTMLFormElement>
+  const handleSubmit = (priceId: "monthly" | "yearly") => async (e: any) => {
     e.preventDefault()
     setLoading(true)
     // Create a Checkout Session.
     const response = await fetchPostJSON('/api/checkout_sessions', {
-      amount: input.customDonation,
+      priceId
     })
 
     if (response.statusCode === 500) {
@@ -49,26 +37,58 @@ const CheckoutForm = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <CustomDonationInput
-        className="checkout-style"
-        name={'customDonation'}
-        value={input.customDonation}
-        min={config.MIN_AMOUNT}
-        max={config.MAX_AMOUNT}
-        step={config.AMOUNT_STEP}
-        currency={config.CURRENCY}
-        onChange={handleInputChange}
-      />
+<>
       <StripeTestCards />
-      <button
-        className="checkout-style-background"
-        type="submit"
-        disabled={loading}
-      >
-        Donate {formatAmountForDisplay(input.customDonation, config.CURRENCY)}
-      </button>
-    </form>
+      <ul className="card-list">
+        <li>
+        <form onSubmit={handleSubmit("monthly")}>
+            <a className="card checkout-style-background">
+              <h2>£2</h2>
+              <h3>7-day trial</h3>
+              <button
+                className="checkout-style-background"
+                type="submit"
+                disabled={loading}
+              >
+                Pay now 
+              </button>
+            </a>
+            </form>
+        </li>
+
+        <li>
+        <form onSubmit={handleSubmit("monthly")}>
+            <a className="card elements-style-background">
+              <h2>£5</h2>
+              <h3>1 month</h3>       
+              <button
+                className="elements-style-background"
+                type="submit"
+                disabled={loading}
+              >
+                Pay now 
+              </button>        
+            </a>
+            </form>
+        </li>
+
+        <li>
+        <form onSubmit={handleSubmit("yearly")}>
+            <a className="card cart-style-background">
+              <h2>£50</h2>
+              <h3>1 year</h3>
+              <button
+                className="cart-style-background"
+                type="submit"
+                disabled={loading}
+              >
+                Pay now 
+              </button>
+            </a>
+            </form>
+        </li>
+      </ul>
+      </>
   )
 }
 
